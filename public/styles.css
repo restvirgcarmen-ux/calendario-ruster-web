@@ -77,3 +77,67 @@
     white-space: normal;
   }
 }
+
+/* ===== CORRECCIÓN VENTANA DE COMPRA ===== */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.modal.open {
+  display: flex;
+}
+
+.modal .box {
+  width: min(620px, 100%);
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  border-radius: 24px;
+}
+
+/* Evita que la página de atrás se desplace */
+body:has(.modal.open) {
+  overflow: hidden;
+}
+
+/* Título en una sola línea */
+.modal .box h2 {
+  white-space: nowrap;
+  font-size: clamp(28px, 4vw, 48px);
+  line-height: 1.1;
+}
+
+/* QR */
+.modal .box img {
+  display: block;
+  max-width: 280px;
+  width: 100%;
+  height: auto;
+  margin: 15px auto;
+}
+
+/* En celulares permitimos que el título se adapte */
+@media (max-width: 600px) {
+  .modal {
+    padding: 10px;
+  }
+
+  .modal .box {
+    max-height: calc(100vh - 20px);
+    border-radius: 18px;
+  }
+
+  .modal .box h2 {
+    white-space: normal;
+    font-size: 32px;
+  }
+}
