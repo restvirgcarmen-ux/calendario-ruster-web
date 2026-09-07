@@ -6,5 +6,84 @@
 <section class="section dark" id="como-funciona"><div class="head"><label>COMPRA EN 4 PASOS</label><h2>Así recibirás <em>Ruster</em>.</h2></div><div class="steps"><article><b>01</b><h3>Compra</h3><p>Completa tus datos y realiza el pago.</p></article><article><b>02</b><h3>Recibe tu licencia</h3><p>Obtendrás un código personal.</p></article><article><b>03</b><h3>Descarga</h3><p>Descarga e instala el APK en Android.</p></article><article><b>04</b><h3>Activa</h3><p>Introduce tu código y comienza.</p></article></div></section>
 <section class="section purchase" id="comprar"><div class="buy"><div><label>LICENCIA INDIVIDUAL</label><h2>Calendario <em>Ruster</em></h2><p>Una licencia para un dispositivo Android.</p><ul><li>✓ Aplicación Calendario Ruster</li><li>✓ Código de licencia personal</li><li>✓ Activación online</li><li>✓ Actualizaciones compatibles</li></ul></div><div class="price"><small>PRECIO DE LANZAMIENTO</small><strong><sup>S/</sup> <span id="price">29.90</span></strong><p>Pago único · licencia individual</p><button class="btn primary" id="buy">Comprar Calendario Ruster</button><small>🔒 Pago seguro · Entrega digital</small></div></div></section>
 <section class="section faq" id="preguntas"><div class="head"><label>PREGUNTAS FRECUENTES</label><h2>Antes de <em>comprar</em>.</h2></div><details><summary>¿En cuántos teléfonos puedo usar una licencia?</summary><p>La licencia está diseñada para quedar vinculada al primer dispositivo que la active.</p></details><details><summary>¿Qué recibo después de comprar?</summary><p>Recibirás las instrucciones, el APK y tu código de licencia según el método de entrega que configuremos.</p></details><details><summary>¿Puedo cambiar de teléfono?</summary><p>Podremos definir un procedimiento de restablecimiento según las condiciones de venta.</p></details><details><summary>¿Necesito internet?</summary><p>La activación inicial requiere conexión con el servicio de licencias.</p></details></section></main>
-<footer><div class="brand"><b>R</b> Calendario <strong>Ruster</strong></div><span>© 2026 Calendario Ruster</span><span>Aplicación para Android</span></footer>
-<div class="modal" id="modal"><div class="box"><button id="close">×</button><label>COMENZAR COMPRA</label><h2>Obtén <em>Calendario Ruster</em></h2><p>Este formulario prepara el pedido. El pago real se conectará después.</p><form id="form"><input name="name" required placeholder="Tu nombre"><input name="email" type="email" required placeholder="tu@email.com"><button class="btn primary">Continuar</button></form><div id="result"></div></div></div><script src="/app.js"></script></body></html>
+<footer><div class="brand"><b>R</b> Calendario <strong>Ruster</strong></div><span>© 2026 Calendario Ruster</span><span>Aplicación para Android</span></footer><div class="modal" id="modal">
+  <div class="box">
+    <button id="close">×</button>
+
+    <label>COMENZAR COMPRA</label>
+
+    <h2>Obtén <em>Calendario Ruster</em></h2>
+
+    <p>
+      Completa tus datos y selecciona cómo deseas realizar el pago.
+    </p>
+
+    <form id="form">
+
+      <input
+        name="name"
+        required
+        placeholder="Tu nombre"
+      >
+
+      <input
+        name="email"
+        type="email"
+        required
+        placeholder="tu@email.com"
+      >
+
+      <label class="payment-label">
+        MÉTODO DE PAGO
+      </label>
+
+      <select name="paymentMethod" id="paymentMethod" required>
+        <option value="">Selecciona una opción</option>
+        <option value="yape">Yape</option>
+        <option value="plin">Plin</option>
+      </select>
+
+      <button class="btn primary" type="submit">
+        Continuar con el pago
+      </button>
+
+    </form>
+
+    <div id="paymentInfo" style="display:none;">
+
+      <hr>
+
+      <h3>Realiza tu pago</h3>
+
+      <p id="paymentText"></p>
+
+      <div class="payment-amount">
+        <small>MONTO A PAGAR</small>
+        <strong>S/ <span id="paymentPrice">29.90</span></strong>
+      </div>
+
+      <div class="order-number">
+        <small>NÚMERO DE PEDIDO</small>
+        <strong id="orderId"></strong>
+      </div>
+
+      <p>
+        Después de realizar el pago, conserva tu comprobante.
+      </p>
+
+      <button
+        type="button"
+        class="btn"
+        id="newOrder"
+      >
+        Volver
+      </button>
+
+    </div>
+
+    <div id="result"></div>
+
+  </div>
+</div>
+
+</body></html>
