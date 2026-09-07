@@ -141,3 +141,155 @@ body:has(.modal.open) {
     font-size: 32px;
   }
 }
+
+/* ===== SECCIÓN DE PAGO ===== */
+
+.payment-box {
+  margin-top: 24px;
+  padding: 28px;
+  background: #f8f8fc;
+  border: 1px solid #e5e5ef;
+  border-radius: 22px;
+  text-align: center;
+}
+
+.payment-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.payment-icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border-radius: 12px;
+  font-size: 20px;
+}
+
+.payment-header h3 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.payment-header p {
+  margin: 3px 0 0;
+  font-size: 13px;
+  color: #777;
+}
+
+.payment-method {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  background: #ffffff;
+  border: 1px solid #e5e5ef;
+  border-radius: 14px;
+  margin-bottom: 18px;
+}
+
+.payment-method strong {
+  font-size: 17px;
+}
+
+.payment-method span {
+  font-size: 12px;
+  font-weight: 700;
+  color: #16a34a;
+}
+
+.payment-price {
+  margin: 20px 0;
+}
+
+.payment-price small {
+  display: block;
+  color: #777;
+  margin-bottom: 4px;
+}
+
+.payment-price strong {
+  font-size: 30px;
+}
+
+.payment-instruction {
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 18px;
+}
+
+.payment-instruction > p:first-child {
+  margin-top: 0;
+  font-weight: 600;
+}
+
+.qr-container {
+  width: 280px;
+  max-width: 100%;
+  margin: 18px auto;
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid #e5e5ef;
+  border-radius: 16px;
+  box-sizing: border-box;
+}
+
+.qr-container img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.payment-number {
+  margin-bottom: 0;
+  color: #666;
+}
+
+.payment-number strong {
+  color: #111;
+}
+
+.payment-note {
+  margin: 18px 0;
+  padding: 14px;
+  background: #ffffff;
+  border-radius: 14px;
+}
+
+.payment-note strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.payment-note span {
+  font-size: 13px;
+  color: #777;
+}
+
+.payment-confirm,
+.payment-continue {
+  width: 100%;
+  margin-top: 8px;
+}
+
+@media (max-width: 600px) {
+  .payment-box {
+    padding: 18px;
+  }
+
+  .payment-method {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .qr-container {
+    width: 250px;
+  }
+}
