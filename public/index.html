@@ -11,23 +11,50 @@
 <input name="name" required placeholder="Tu nombre">
 <input name="email" type="email" required placeholder="tu@email.com">
 
-<div class="payment">
-<h3>Forma de pago</h3>
+<div class="payment-box">
 
-<p><strong>Yape / Plin</strong></p>
+  <div class="payment-header">
+    <span class="payment-icon">💳</span>
+    <div>
+      <h3>Forma de pago</h3>
+      <p>Pago rápido y seguro</p>
+    </div>
+  </div>
 
-<p>Realiza el pago de <strong>S/ 29.90</strong></p>
+  <div class="payment-method">
+    <strong>Yape / Plin</strong>
+    <span>Disponible ahora</span>
+  </div>
 
-<p>Escanea el código QR de Plin:</p>
+  <div class="payment-price">
+    <small>Total a pagar</small>
+    <strong>S/ 29.90</strong>
+  </div>
 
-<img src="/qr-plin.jpeg" alt="QR de Plin" class="qr-plin">
+  <div class="payment-instruction">
+    <p>Escanea el código QR de Plin</p>
 
-<p class="payment-number">
-Número Yape / Plin: <strong>POR COLOCAR</strong>
-</p>
+    <div class="qr-container">
+      <img src="/qr-plin.jpeg" alt="QR de Plin">
+    </div>
 
-<button type="submit" class="btn primary">
-Ya realicé el pago
-</button>
+    <p class="payment-number">
+      Número Yape / Plin:
+      <strong>POR COLOCAR</strong>
+    </p>
+  </div>
+
+  <div class="payment-note">
+    <strong>Después de realizar el pago</strong>
+    <span>Presiona el botón para continuar con tu pedido.</span>
+  </div>
+
+  <button type="button" class="btn primary payment-confirm">
+    ✓ Ya realicé el pago
+  </button>
+
+  <button type="button" class="btn payment-continue">
+    Continuar
+  </button>
+
 </div>
-</form><button class="btn primary">Continuar</button></form><div id="result"></div></div></div><script src="/app.js"></script></body></html>
