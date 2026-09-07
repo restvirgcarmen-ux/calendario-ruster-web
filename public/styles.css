@@ -22,3 +22,34 @@
 .payment-number {
   margin-top: 12px;
 }
+
+/* Ajuste de ventana de compra */
+.modal .box {
+  width: min(680px, calc(100% - 30px));
+  max-width: 680px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* Título de compra en una sola línea */
+.modal .box h2 {
+  white-space: nowrap;
+  font-size: 42px;
+  line-height: 1.1;
+  letter-spacing: -1px;
+}
+
+/* Mejor distribución del formulario */
+.modal .box form {
+  width: 100%;
+}
+
+@media (max-width: 700px) {
+  .modal .box {
+    width: calc(100% - 24px);
+  }
+
+  .modal .box h2 {
+    font-size: 32px;
+  }
+}
