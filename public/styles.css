@@ -195,3 +195,20 @@ body:has(.modal.open) {
 .payment-selected strong {
   color: #6c4cff;
 }
+
+.payment-content.hidden {
+  display: none;
+}
+
+.payment-content {
+  text-align: center;
+}
+
+.payment-content img {
+  display: block;
+  max-width: 280px;
+  width: 100%;
+  height: auto;
+  margin: 15px auto;
+  border-radius: 12px;
+}
