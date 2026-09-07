@@ -1,127 +1,93 @@
-const modal = document.querySelector("#modal");
-const buy = document.querySelector("#buy");
-const close = document.querySelector("#close");
-const form = document.querySelector("#form");
-const result = document.querySelector("#result");
+document.addEventListener("DOMContentLoaded", () => {
 
-const paymentInfo = document.querySelector("#paymentInfo");
-const paymentText = document.querySelector("#paymentText");
-const paymentPrice = document.querySelector("#paymentPrice");
-const orderId = document.querySelector("#orderId");
-const newOrder = document.querySelector("#newOrder");
+  const modal = document.querySelector("#modal");
+  const buy = document.querySelector("#buy");
+  const close = document.querySelector("#close");
+  const form = document.querySelector("#form");
+  const result = document.querySelector("#result");
+  const price = document.querySelector("#price");
 
-let config = {
-  price: "29.90",
-  currency: "PEN",
-  paymentMethods: {
-    yape: false,
-    plin: false
+  // Abrir ventana de compra
+  if (buy && modal) {
+    buy.addEventListener("click", (e) => {
+      e.preventDefault();
+      modal.classList.add("open");
+    });
   }
-};
 
-// Abrir ventana de compra
-buy.onclick = () => {
-  modal.classList.add("open");
-};
-
-// Cerrar ventana
-close.onclick = () => {
-  modal.classList.remove("open");
-};
-
-// Cerrar haciendo clic fuera
-modal.onclick = (e) => {
-  if (e.target === modal) {
-    modal.classList.remove("open");
+  // Cerrar ventana
+  if (close && modal) {
+    close.addEventListener("click", () => {
+      modal.classList.remove("open");
+    });
   }
-};
 
-// Obtener configuración
-fetch("/api/config")
-  .then((r) => r.json())
-  .then((c) => {
-    config = c;
+  // Cerrar al hacer clic fuera de la ventana
+  if (modal) {
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        modal.classList.remove("open");
+      }
+    });
+  }
 
-    if (c.price) {
-      document.querySelector("#price").textContent =
-        Number(c.price).toFixed(2);
-
-      paymentPrice.textContent =
-        Number(c.price).toFixed(2);
-    }
-  })
-  .catch(() => {
-    console.log("No se pudo cargar la configuración.");
-  });
-
-// Crear pedido
-form.onsubmit = async (e) => {
-  e.preventDefault();
-
-  result.textContent = "Preparando pedido...";
-
-  const data = Object.fromEntries(
-    new FormData(form)
-  );
-
-  try {
-
-    const r = await fetch("/api/order", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
+  // Obtener precio desde el servidor
+  fetch("/api/config")
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Error al obtener configuración");
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (price && data.price) {
+        price.textContent = Number(data.price).toFixed(2);
+      }
+    })
+    .catch(error => {
+      console.error("Error de configuración:", error);
     });
 
-    const j = await r.json();
+  // Procesar formulario de compra
+  if (form) {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-    if (!r.ok || !j.ok) {
-      result.textContent =
-        j.message || "No se pudo crear el pedido.";
-      return;
-    }
+      if (result) {
+        result.textContent = "Preparando pedido...";
+      }
 
-    const method = j.order.paymentMethod;
+      try {
 
-    if (method === "yape") {
+        const formData = new FormData(form);
 
-      paymentText.innerHTML =
-        "<strong>Yape</strong><br>" +
-        "Realiza el pago al número de Yape configurado.";
+        const response = await fetch("/api/order", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(
+            Object.fromEntries(formData.entries())
+          )
+        });
 
-    } else if (method === "plin") {
+        const data = await response.json();
 
-      paymentText.innerHTML =
-        "<strong>Plin</strong><br>" +
-        "Realiza el pago al número de Plin configurado.";
+        if (result) {
+          result.textContent =
+            data.message || "Pedido preparado correctamente.";
+        }
 
-    }
+      } catch (error) {
 
-    orderId.textContent = j.order.id;
+        console.error("Error:", error);
 
-    form.style.display = "none";
-    paymentInfo.style.display = "block";
-
-    result.textContent = "";
-
-  } catch (error) {
-
-    console.error(error);
-
-    result.textContent =
-      "No se pudo conectar con el servidor.";
-
+        if (result) {
+          result.textContent =
+            "No se pudo preparar el pedido.";
+        }
+      }
+    });
   }
-};
 
-// Volver al formulario
-newOrder.onclick = () => {
-
-  form.reset();
-
-  form.style.display = "block";
-  paymentInfo.style.display = "none";
-
-  result.textContent = "";
-};
+});
