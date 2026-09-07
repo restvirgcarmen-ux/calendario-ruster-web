@@ -53,3 +53,27 @@
     font-size: 32px;
   }
 }
+
+/* Ajuste de ventana de compra */
+.modal .box {
+  width: min(700px, 92vw);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal .box h2 {
+  font-size: 42px;
+  white-space: nowrap;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 700px) {
+  .modal .box {
+    width: 94vw;
+  }
+
+  .modal .box h2 {
+    font-size: 30px;
+    white-space: normal;
+  }
+}
