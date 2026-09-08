@@ -22,28 +22,3 @@ paymentPopup.onclick=e=>{
     paymentPopup.classList.remove("open");
   }
 };
-
-const paymentDone = document.querySelector("#payment-done");
-const paymentPopup = document.querySelector("#payment-popup");
-
-paymentDone.onclick = async () => {
-  paymentPopup.classList.remove("open");
-
-  result.textContent = "Registrando pedido...";
-
-  try {
-    const r = await fetch("/api/order", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(Object.fromEntries(new FormData(form)))
-    });
-
-    const j = await r.json();
-
-    result.textContent = j.message || "Pedido registrado correctamente.";
-  } catch (error) {
-    result.textContent = "No se pudo registrar el pedido.";
-  }
-};
