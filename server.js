@@ -30,6 +30,35 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, "public")));
 
+// Prueba de conexión con PostgreSQL
+app.get("/api/db-test", async (req, res) => {
+  const token = req.query.token;
+
+  if (!ADMIN_TOKEN || token !== ADMIN_TOKEN) {
+    return res.status(401).json({
+      ok: false,
+      message: "No autorizado."
+    });
+  }
+
+  try {
+    const result = await pool.query("SELECT NOW() AS ahora");
+
+    res.json({
+      ok: true,
+      message: "Conexión con PostgreSQL correcta.",
+      databaseTime: result.rows[0].ahora
+    });
+  } catch (error) {
+    console.error("Error PostgreSQL:", error);
+
+    res.status(500).json({
+      ok: false,
+      message: "No se pudo conectar con PostgreSQL."
+    });
+  }
+});
+
 // Configuración de la tienda
 app.get("/api/config", (req, res) => {
   res.json({
