@@ -271,3 +271,58 @@ body:has(.modal.open) {
     font-weight: 700;
     cursor: pointer;
 }
+
+/* Ajuste de ventanas de compra en computadora */
+#modal .box {
+    width: min(720px, calc(100vw - 40px));
+    max-height: 90vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+/* Ventana del pago */
+#payment-popup {
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#payment-popup .payment-popup-content {
+    width: min(430px, calc(100vw - 60px));
+    max-height: 82vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 24px;
+}
+
+/* QR más compacto para que todo entre mejor */
+#payment-qr {
+    width: 240px;
+    max-width: 100%;
+    height: auto;
+    margin: 14px auto;
+}
+
+/* Botón de pago */
+#payment-done {
+    width: 100%;
+    margin-top: 12px;
+}
+
+/* En pantallas pequeñas */
+@media (max-width: 600px) {
+
+    #modal .box {
+        width: calc(100vw - 24px);
+        max-height: 92vh;
+    }
+
+    #payment-popup .payment-popup-content {
+        width: calc(100vw - 30px);
+        max-height: 88vh;
+        padding: 20px;
+    }
+
+    #payment-qr {
+        width: 220px;
+    }
+}
