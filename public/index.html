@@ -27,6 +27,34 @@
   </button>
 </div>
 
+<div id="payment-popup" class="payment-popup">
+    <div class="payment-popup-content">
+
+        <button type="button" id="payment-popup-close" class="payment-popup-close">×</button>
+
+        <h3 id="payment-popup-title">Pago con Plin</h3>
+
+        <p>Escanea el código QR para realizar tu pago de:</p>
+
+        <p><strong>S/ 29.90</strong></p>
+
+        <img
+            id="payment-qr"
+            src="/qr-plin.jpeg"
+            alt="QR de Plin"
+        >
+
+        <p class="payment-number">
+            Número Yape / Plin: <strong>POR COLOCAR</strong>
+        </p>
+
+        <button type="button" id="payment-done" class="payment-done">
+            Ya realicé el pago
+        </button>
+
+    </div>
+</div>
+  
 <p id="payment-selected" class="payment-selected">
   Método seleccionado: <strong>Plin</strong>
 </p>
