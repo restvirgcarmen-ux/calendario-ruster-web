@@ -195,7 +195,7 @@
       const data = await response.json();
 
       if (!response.ok || !data.ok) {
-        message.textContent = "Clave incorrecta o acceso no autorizado.";
+        alert("Clave incorrecta o acceso no autorizado.");
         return;
       }
 
@@ -205,7 +205,7 @@
       mostrarPedidos(data.orders);
 
     } catch (error) {
-      message.textContent = "No se pudo conectar con el servidor.";
+      alert("No se pudo conectar con el servidor.");
     }
   }
 
