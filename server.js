@@ -96,7 +96,7 @@ app.get("/api/config", (req, res) => {
 });
 
 // Crear pedido
-app.post("/api/order", (req, res) => {
+app.post("/api/order", async (req, res) => {
   const { name, email, paymentMethod } = req.body || {};
 
   if (!name || !email) {
@@ -141,40 +141,65 @@ app.post("/api/order", (req, res) => {
     createdAt: now.toISOString()
   };
 
-  orders.set(orderId, order);
+  try {
+    await pool.query(
+      `
+      INSERT INTO orders (
+        id,
+        name,
+        email,
+        product,
+        price,
+        currency,
+        payment_method,
+        status,
+        operation_code,
+        license_code,
+        download_token,
+        created_at
+      )
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
+      `,
+      [
+        order.id,
+        order.name,
+        order.email,
+        order.product,
+        order.price,
+        order.currency,
+        order.paymentMethod,
+        order.status,
+        order.operationCode,
+        null,
+        null,
+        order.createdAt
+      ]
+    );
 
-  res.json({
-    ok: true,
-    status: order.status,
-    message: "Pedido creado correctamente.",
-    order: {
-      id: order.id,
-      product: order.product,
-      price: order.price,
-      currency: order.currency,
-      paymentMethod: order.paymentMethod
-    }
-  });
-});
+    // También mantenemos el pedido en memoria temporalmente
+    orders.set(orderId, order);
 
-// API del panel de administración
-app.get("/api/admin/orders", (req, res) => {
-  const token = req.query.token;
+    res.json({
+      ok: true,
+      status: order.status,
+      message: "Pedido creado correctamente.",
+      order: {
+        id: order.id,
+        product: order.product,
+        price: order.price,
+        currency: order.currency,
+        paymentMethod: order.paymentMethod
+      }
+    });
 
-  if (!ADMIN_TOKEN || token !== ADMIN_TOKEN) {
-    return res.status(401).json({
+  } catch (error) {
+    console.error("Error guardando pedido:", error);
+
+    res.status(500).json({
       ok: false,
-      message: "No autorizado."
+      message: "No se pudo guardar el pedido."
     });
   }
-
-  const pendingOrders = Array.from(orders.values())
-    .filter(order => order.status === "pendiente_pago");
-
-  res.json({
-    ok: true,
-    orders: pendingOrders
-  });
 });
 
 // Consultar pedido
