@@ -202,6 +202,52 @@ app.post("/api/order", async (req, res) => {
   }
 });
 
+// API del panel de administración
+app.get("/api/admin/orders", async (req, res) => {
+  const token = req.query.token;
+
+  if (!ADMIN_TOKEN || token !== ADMIN_TOKEN) {
+    return res.status(401).json({
+      ok: false,
+      message: "No autorizado."
+    });
+  }
+
+  try {
+    const result = await pool.query(`
+      SELECT
+        id,
+        name,
+        email,
+        product,
+        price,
+        currency,
+        payment_method AS "paymentMethod",
+        status,
+        operation_code AS "operationCode",
+        license_code AS "licenseCode",
+        download_token AS "downloadToken",
+        created_at AS "createdAt"
+      FROM orders
+      WHERE status = 'pendiente_pago'
+      ORDER BY created_at DESC
+    `);
+
+    res.json({
+      ok: true,
+      orders: result.rows
+    });
+
+  } catch (error) {
+    console.error("Error obteniendo pedidos:", error);
+
+    res.status(500).json({
+      ok: false,
+      message: "No se pudieron obtener los pedidos."
+    });
+  }
+});
+
 // Consultar pedido
 app.get("/api/order/:id", (req, res) => {
   const order = orders.get(req.params.id);
