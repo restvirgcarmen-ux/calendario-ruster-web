@@ -1,1 +1,1 @@
-{"name":"calendario-ruster-store","version":"1.0.0","private":true,"main":"server.js","scripts":{"start":"node server.js"},"dependencies":{"express":"^4.21.2"}}
+{"name":"calendario-ruster-store","version":"1.0.0","private":true,"main":"server.js","scripts":{"start":"node server.js"},"dependencies":{"express":"^4.21.2","pg":"^8.16.3"}}
