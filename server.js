@@ -8,10 +8,11 @@ const APK_URL =
   process.env.APK_URL || "/downloads/calendario-ruster.apk";
 const PRICE = process.env.PRODUCT_PRICE || "29.90";
 const CURRENCY = process.env.CURRENCY || "PEN";
-
 // Datos de pago
 const YAPE_NUMBER = process.env.YAPE_NUMBER || "";
 const PLIN_NUMBER = process.env.PLIN_NUMBER || "";
+// Seguridad del panel de administración
+const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "";
 
 // Pedidos temporales
 const orders = new Map();
