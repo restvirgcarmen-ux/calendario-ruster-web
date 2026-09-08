@@ -326,3 +326,51 @@ body:has(.modal.open) {
         width: 220px;
     }
 }
+
+/* Ventana de Plin: mostrar todo en computadora */
+#payment-popup .payment-popup-content {
+    width: 420px;
+    max-width: calc(100vw - 40px);
+    height: auto;
+    max-height: calc(100vh - 40px);
+    overflow: hidden;
+    padding: 20px 24px;
+}
+
+/* QR más pequeño para que todo entre */
+#payment-popup #payment-qr {
+    width: 190px;
+    height: 190px;
+    object-fit: contain;
+    margin: 10px auto;
+}
+
+/* Espaciado compacto */
+#payment-popup .payment-popup-content h3 {
+    margin: 4px 0 12px;
+}
+
+#payment-popup .payment-popup-content p {
+    margin: 8px 0;
+}
+
+/* Botón siempre visible */
+#payment-popup #payment-done {
+    margin-top: 10px;
+    padding: 13px;
+}
+
+/* En celulares sí permitimos desplazamiento */
+@media (max-width: 600px) {
+    #payment-popup .payment-popup-content {
+        max-height: calc(100vh - 24px);
+        overflow-y: auto;
+        width: calc(100vw - 24px);
+        padding: 18px;
+    }
+
+    #payment-popup #payment-qr {
+        width: 210px;
+        height: 210px;
+    }
+}
