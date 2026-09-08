@@ -9,6 +9,27 @@ const pool = new Pool({
   }
 });
 
+async function initDatabase() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS orders (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      product TEXT NOT NULL,
+      price TEXT NOT NULL,
+      currency TEXT NOT NULL,
+      payment_method TEXT NOT NULL,
+      status TEXT NOT NULL,
+      operation_code TEXT,
+      license_code TEXT,
+      download_token TEXT,
+      created_at TIMESTAMPTZ NOT NULL
+    )
+  `);
+
+  console.log("Tabla orders lista.");
+}
+
 const app = express();
 
 const PORT = process.env.PORT || 3000;
