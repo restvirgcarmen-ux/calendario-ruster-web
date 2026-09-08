@@ -99,12 +99,15 @@ app.post("/api/order", (req, res) => {
   });
 });
 
-// Panel de administración
-app.get("/admin", (req, res) => {
+// API del panel de administración
+app.get("/api/admin/orders", (req, res) => {
   const token = req.query.token;
 
   if (!ADMIN_TOKEN || token !== ADMIN_TOKEN) {
-    return res.status(401).send("No autorizado.");
+    return res.status(401).json({
+      ok: false,
+      message: "No autorizado."
+    });
   }
 
   const pendingOrders = Array.from(orders.values())
