@@ -99,6 +99,23 @@ app.post("/api/order", (req, res) => {
   });
 });
 
+// Panel de administración
+app.get("/admin", (req, res) => {
+  const token = req.query.token;
+
+  if (!ADMIN_TOKEN || token !== ADMIN_TOKEN) {
+    return res.status(401).send("No autorizado.");
+  }
+
+  const pendingOrders = Array.from(orders.values())
+    .filter(order => order.status === "pendiente_pago");
+
+  res.json({
+    ok: true,
+    orders: pendingOrders
+  });
+});
+
 // Consultar pedido
 app.get("/api/order/:id", (req, res) => {
   const order = orders.get(req.params.id);
