@@ -204,8 +204,15 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-app.listen(PORT, () => {
-  console.log(
-    "Calendario Ruster Store en puerto " + PORT
-  );
-});
+initDatabase()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(
+        "Calendario Ruster Store en puerto " + PORT
+      );
+    });
+  })
+  .catch((error) => {
+    console.error("Error inicializando PostgreSQL:", error);
+    process.exit(1);
+  });
