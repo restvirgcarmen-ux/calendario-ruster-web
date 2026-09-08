@@ -14,7 +14,7 @@ paymentPopupClose.onclick=()=>{
 
 paymentDone.onclick=()=>{
   paymentPopup.classList.remove("open");
-  result.textContent="Pago registrado. Estamos verificando tu pedido.";
+  form.requestSubmit();
 };
 
 paymentPopup.onclick=e=>{
