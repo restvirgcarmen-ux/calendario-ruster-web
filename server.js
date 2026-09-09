@@ -437,7 +437,7 @@ app.post("/api/admin/orders/:id/approve", async (req, res) => {
       SET
         status = 'aprobado',
         license_code = $1,
-        download_token = $2
+        download_token = $2,
         download_expires_at = NOW() + INTERVAL '48 hours'
       WHERE id = $3
         AND status = 'pendiente_pago'
