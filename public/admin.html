@@ -289,10 +289,19 @@
           return;
         }
 
-        alert("Pedido aprobado correctamente.");
+       const downloadUrl =
+  window.location.origin +
+  "/download?token=" +
+  encodeURIComponent(data.order.downloadToken);
 
-        cargarPedidos();
+alert(
+  "PEDIDO APROBADO\n\n" +
+  "Licencia: " + data.order.licenseCode + "\n\n" +
+  "Enlace de descarga:\n" + downloadUrl
+);
 
+cargarPedidos();
+        
       } catch (error) {
 
         alert("No se pudo conectar con el servidor.");
