@@ -60,3 +60,44 @@ paymentPopup.onclick=e=>{
     paymentPopup.classList.remove("open");
   }
 };
+
+const consultOrder = document.querySelector("#consult-order");
+const orderIdInput = document.querySelector("#order-id");
+const orderResult = document.querySelector("#order-result");
+
+consultOrder.onclick = async () => {
+  const orderId = orderIdInput.value.trim();
+
+  if (!orderId) {
+    orderResult.textContent = "Ingresa tu número de pedido.";
+    return;
+  }
+
+  orderResult.textContent = "Consultando...";
+
+  try {
+    const r = await fetch(
+      `/api/order-status/${encodeURIComponent(orderId)}`
+    );
+
+    const j = await r.json();
+
+    if (!j.ok) {
+      orderResult.textContent =
+        j.message || "No encontramos ese pedido.";
+      return;
+    }
+
+    if (j.order.status === "aprobado") {
+      orderResult.textContent =
+        "🟢 Pedido aprobado. Tu compra está lista.";
+    } else {
+      orderResult.textContent =
+        "🟡 Pedido pendiente de pago.";
+    }
+
+  } catch (error) {
+    orderResult.textContent =
+      "No se pudo consultar el pedido.";
+  }
+};
