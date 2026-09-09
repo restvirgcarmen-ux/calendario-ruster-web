@@ -266,6 +266,94 @@ app.get("/api/order-status/:id", async (req, res) => {
   }
 });
 
+// Verificar compra con número de pedido y correo
+app.post("/api/order-access", async (req, res) => {
+  const { orderId, email } = req.body || {};
+
+  if (!orderId || !email) {
+    return res.status(400).json({
+      ok: false,
+      message: "Ingresa tu número de pedido y correo."
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `
+      SELECT
+        id,
+        email,
+        status,
+        license_code AS "licenseCode",
+        download_token AS "downloadToken",
+        download_expires_at AS "downloadExpiresAt"
+      FROM orders
+      WHERE id = $1
+      `,
+      [String(orderId).trim()]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        ok: false,
+        message: "No encontramos ese pedido."
+      });
+    }
+
+    const order = result.rows[0];
+
+    if (
+      String(order.email).trim().toLowerCase() !==
+      String(email).trim().toLowerCase()
+    ) {
+      return res.status(403).json({
+        ok: false,
+        message: "El correo no coincide con el pedido."
+      });
+    }
+
+    if (order.status !== "aprobado") {
+      return res.status(403).json({
+        ok: false,
+        message: "Tu pedido todavía no está aprobado."
+      });
+    }
+
+    if (!order.licenseCode || !order.downloadToken) {
+      return res.status(500).json({
+        ok: false,
+        message: "La compra todavía no tiene datos de entrega."
+      });
+    }
+
+    if (
+      order.downloadExpiresAt &&
+      new Date(order.downloadExpiresAt) <= new Date()
+    ) {
+      return res.status(410).json({
+        ok: false,
+        message: "El enlace de descarga ha expirado."
+      });
+    }
+
+    res.json({
+      ok: true,
+      licenseCode: order.licenseCode,
+      downloadUrl:
+        `/download?token=${encodeURIComponent(order.downloadToken)}`,
+      downloadExpiresAt: order.downloadExpiresAt
+    });
+
+  } catch (error) {
+    console.error("Error verificando compra:", error);
+
+    res.status(500).json({
+      ok: false,
+      message: "No se pudo verificar la compra."
+    });
+  }
+});
+
 // Consultar estado del pedido
 app.get("/api/order-status/:id", async (req, res) => {
   const orderId = String(req.params.id || "").trim();
