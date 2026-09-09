@@ -272,6 +272,18 @@ app.get("/api/admin/orders/:id", async (req, res) => {
   }
 
   try {
+    
+    await pool.query(
+  `
+  UPDATE orders
+  SET download_expires_at = NOW() + INTERVAL '48 hours'
+  WHERE id = $1
+    AND status = 'aprobado'
+    AND download_expires_at IS NULL
+  `,
+  [req.params.id]
+);
+    
     const result = await pool.query(
       `
       SELECT
