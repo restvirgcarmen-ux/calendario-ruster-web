@@ -390,9 +390,37 @@ app.get("/api/order/:id", (req, res) => {
   });
 });
 
-// Ruta de descarga
-app.get("/download", (req, res) => {
-  res.redirect(APK_URL);
+// Ruta de descarga protegida
+app.get("/download", async (req, res) => {
+  const token = req.query.token;
+
+  if (!token) {
+    return res.status(401).send("Enlace de descarga no válido.");
+  }
+
+  try {
+    const result = await pool.query(
+      `
+      SELECT id
+      FROM orders
+      WHERE download_token = $1
+        AND status = 'aprobado'
+      LIMIT 1
+      `,
+      [token]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(403).send("Enlace de descarga inválido o expirado.");
+    }
+
+    res.redirect(APK_URL);
+
+  } catch (error) {
+    console.error("Error verificando descarga:", error);
+
+    res.status(500).send("No se pudo procesar la descarga.");
+  }
 });
 
 // Página principal
