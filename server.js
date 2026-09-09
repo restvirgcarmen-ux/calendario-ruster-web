@@ -28,6 +28,11 @@ async function initDatabase() {
     )
   `);
 
+    await pool.query(`
+    ALTER TABLE orders
+    ADD COLUMN IF NOT EXISTS download_expires_at TIMESTAMPTZ
+  `);
+  
   console.log("Tabla orders lista.");
 }
 
