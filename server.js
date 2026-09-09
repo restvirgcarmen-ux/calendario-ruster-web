@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const { Pool } = require("pg");
+const crypto = require("crypto");
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -37,6 +38,12 @@ const APK_URL =
   process.env.APK_URL || "/downloads/calendario-ruster.apk";
 const PRICE = process.env.PRODUCT_PRICE || "29.90";
 const CURRENCY = process.env.CURRENCY || "PEN";
+
+const LICENSE_SERVER_URL =
+  process.env.LICENSE_SERVER_URL || "";
+
+const LICENSE_ADMIN_TOKEN =
+  process.env.LICENSE_ADMIN_TOKEN || "";
 // Datos de pago
 const YAPE_NUMBER = process.env.YAPE_NUMBER || "";
 const PLIN_NUMBER = process.env.PLIN_NUMBER || "";
@@ -248,7 +255,7 @@ app.get("/api/admin/orders", async (req, res) => {
   }
 });
 
-// Aprobar pedido
+// Aprobar pedido y generar licencia
 app.post("/api/admin/orders/:id/approve", async (req, res) => {
   const token = req.query.token;
 
@@ -262,11 +269,70 @@ app.post("/api/admin/orders/:id/approve", async (req, res) => {
   const orderId = req.params.id;
 
   try {
-    const result = await pool.query(
+    // 1. Buscar el pedido pendiente
+    const orderResult = await pool.query(
+      `
+      SELECT *
+      FROM orders
+      WHERE id = $1
+        AND status = 'pendiente_pago'
+      `,
+      [orderId]
+    );
+
+    if (orderResult.rowCount === 0) {
+      return res.status(404).json({
+        ok: false,
+        message: "Pedido no encontrado o ya fue procesado."
+      });
+    }
+
+    // 2. Pedir una licencia nueva al servidor de licencias
+    const licenseResponse = await fetch(
+      `${LICENSE_SERVER_URL}/api/admin/licenses`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${LICENSE_ADMIN_TOKEN}`
+        },
+        body: JSON.stringify({
+          count: 1
+        })
+      }
+    );
+
+    const licenseData = await licenseResponse.json();
+
+    if (
+      !licenseResponse.ok ||
+      !licenseData.ok ||
+      !licenseData.licenses ||
+      !licenseData.licenses.length
+    ) {
+      console.error("Error generando licencia:", licenseData);
+
+      return res.status(500).json({
+        ok: false,
+        message: "No se pudo generar la licencia."
+      });
+    }
+
+    const licenseCode = licenseData.licenses[0].code;
+
+    // 3. Crear un token único para la descarga
+    const downloadToken =
+      crypto.randomBytes(32).toString("hex");
+
+    // 4. Aprobar el pedido y guardar licencia + token
+    const updateResult = await pool.query(
       `
       UPDATE orders
-      SET status = 'aprobado'
-      WHERE id = $1
+      SET
+        status = 'aprobado',
+        license_code = $1,
+        download_token = $2
+      WHERE id = $3
         AND status = 'pendiente_pago'
       RETURNING
         id,
@@ -277,25 +343,24 @@ app.post("/api/admin/orders/:id/approve", async (req, res) => {
         currency,
         payment_method AS "paymentMethod",
         status,
-        operation_code AS "operationCode",
         license_code AS "licenseCode",
         download_token AS "downloadToken",
         created_at AS "createdAt"
       `,
-      [orderId]
+      [licenseCode, downloadToken, orderId]
     );
 
-    if (result.rowCount === 0) {
+    if (updateResult.rowCount === 0) {
       return res.status(404).json({
         ok: false,
-        message: "Pedido no encontrado o ya fue procesado."
+        message: "El pedido ya fue procesado."
       });
     }
 
     res.json({
       ok: true,
-      message: "Pedido aprobado correctamente.",
-      order: result.rows[0]
+      message: "Pedido aprobado y licencia generada correctamente.",
+      order: updateResult.rows[0]
     });
 
   } catch (error) {
