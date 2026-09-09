@@ -248,6 +248,66 @@ app.get("/api/admin/orders", async (req, res) => {
   }
 });
 
+// Aprobar pedido
+app.post("/api/admin/orders/:id/approve", async (req, res) => {
+  const token = req.query.token;
+
+  if (!ADMIN_TOKEN || token !== ADMIN_TOKEN) {
+    return res.status(401).json({
+      ok: false,
+      message: "No autorizado."
+    });
+  }
+
+  const orderId = req.params.id;
+
+  try {
+    const result = await pool.query(
+      `
+      UPDATE orders
+      SET status = 'aprobado'
+      WHERE id = $1
+        AND status = 'pendiente_pago'
+      RETURNING
+        id,
+        name,
+        email,
+        product,
+        price,
+        currency,
+        payment_method AS "paymentMethod",
+        status,
+        operation_code AS "operationCode",
+        license_code AS "licenseCode",
+        download_token AS "downloadToken",
+        created_at AS "createdAt"
+      `,
+      [orderId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        ok: false,
+        message: "Pedido no encontrado o ya fue procesado."
+      });
+    }
+
+    res.json({
+      ok: true,
+      message: "Pedido aprobado correctamente.",
+      order: result.rows[0]
+    });
+
+  } catch (error) {
+    console.error("Error aprobando pedido:", error);
+
+    res.status(500).json({
+      ok: false,
+      message: "No se pudo aprobar el pedido."
+    });
+  }
+});
+
 // Consultar pedido
 app.get("/api/order/:id", (req, res) => {
   const order = orders.get(req.params.id);
