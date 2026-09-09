@@ -34,14 +34,7 @@ const goConsult=document.querySelector("#go-consult");
 
 goConsult.onclick=()=>{
   orderModal.classList.remove("open");
-
-  window.location.hash="consultar";
-
-  setTimeout(()=>{
-    document.querySelector("#consultar").scrollIntoView({
-      behavior:"smooth"
-    });
-  },100);
+  modal.classList.remove("open");
 };
 
 const btnPlin=document.querySelector("#btn-plin");
