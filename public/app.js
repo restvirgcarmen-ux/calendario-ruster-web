@@ -29,6 +29,16 @@ form.onsubmit=async e=>{
   }
 };
 
+const orderModal=document.querySelector("#order-modal");
+const goConsult=document.querySelector("#go-consult");
+
+goConsult.onclick=()=>{
+  orderModal.classList.remove("open");
+  document.querySelector("#consultar").scrollIntoView({
+    behavior:"smooth"
+  });
+};
+
 const btnPlin=document.querySelector("#btn-plin");
 const paymentPopup=document.querySelector("#payment-popup");
 const paymentPopupClose=document.querySelector("#payment-popup-close");
