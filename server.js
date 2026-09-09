@@ -260,6 +260,54 @@ app.get("/api/admin/orders", async (req, res) => {
   }
 });
 
+// Consultar un pedido aprobado
+app.get("/api/admin/orders/:id", async (req, res) => {
+  const token = req.query.token;
+
+  if (!ADMIN_TOKEN || token !== ADMIN_TOKEN) {
+    return res.status(401).json({
+      ok: false,
+      message: "No autorizado."
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `
+      SELECT
+        id,
+        status,
+        license_code AS "licenseCode",
+        download_token AS "downloadToken",
+        download_expires_at AS "downloadExpiresAt"
+      FROM orders
+      WHERE id = $1
+      `,
+      [req.params.id]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        ok: false,
+        message: "Pedido no encontrado."
+      });
+    }
+
+    res.json({
+      ok: true,
+      order: result.rows[0]
+    });
+
+  } catch (error) {
+    console.error("Error consultando pedido:", error);
+
+    res.status(500).json({
+      ok: false,
+      message: "Error consultando el pedido."
+    });
+  }
+});
+
 // Aprobar pedido y generar licencia
 app.post("/api/admin/orders/:id/approve", async (req, res) => {
   const token = req.query.token;
