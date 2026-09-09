@@ -65,17 +65,73 @@ const consultOrder = document.querySelector("#consult-order");
 const orderIdInput = document.querySelector("#order-id");
 const orderResult = document.querySelector("#order-result");
 
+function mostrarVentana(titulo, contenido) {
+  const modal = document.createElement("div");
+
+  modal.className = "modal open";
+
+  modal.innerHTML = `
+    <div class="box" style="max-width:480px;text-align:center;">
+
+      <button
+        type="button"
+        class="popup-close"
+        style="
+          float:right;
+          font-size:28px;
+          border:0;
+          background:none;
+          cursor:pointer;
+        "
+      >
+        ×
+      </button>
+
+      <label>CONSULTA DE COMPRA</label>
+
+      <h2>${titulo}</h2>
+
+      <div class="popup-content">
+        ${contenido}
+      </div>
+
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  modal.querySelector(".popup-close").onclick = () => {
+    modal.remove();
+  };
+
+  modal.onclick = (e) => {
+    if (e.target === modal) {
+      modal.remove();
+    }
+  };
+
+  return modal;
+}
+
+
 consultOrder.onclick = async () => {
+
   const orderId = orderIdInput.value.trim();
 
   if (!orderId) {
-    orderResult.textContent = "Ingresa tu número de pedido.";
+    mostrarVentana(
+      "Ingresa tu pedido",
+      `
+        <p>Debes ingresar tu número de pedido para continuar.</p>
+      `
+    );
     return;
   }
 
-  orderResult.textContent = "Consultando...";
+  orderResult.textContent = "";
 
   try {
+
     const r = await fetch(
       `/api/order-status/${encodeURIComponent(orderId)}`
     );
@@ -83,50 +139,95 @@ consultOrder.onclick = async () => {
     const j = await r.json();
 
     if (!j.ok) {
-      orderResult.textContent =
-        j.message || "No encontramos ese pedido.";
+      mostrarVentana(
+        "Pedido no encontrado",
+        `
+          <p>${j.message || "No encontramos ese pedido."}</p>
+        `
+      );
       return;
     }
+
 
     if (j.order.status !== "aprobado") {
-      orderResult.textContent =
-        "🟡 Pedido pendiente de pago.";
+
+      mostrarVentana(
+        "Pedido pendiente",
+        `
+          <div style="font-size:45px;">🟡</div>
+
+          <h3>Pedido pendiente de pago</h3>
+
+          <p>
+            Tu pedido todavía está pendiente de aprobación.
+          </p>
+
+          <p>
+            Cuando se confirme tu pago podrás volver a consultar
+            para obtener tu licencia y descargar Calendario Ruster.
+          </p>
+        `
+      );
+
       return;
     }
 
-    orderResult.innerHTML = `
-      <div style="margin-top:15px;">
-        🟢 <strong>Pedido aprobado.</strong>
-        <p>Ingresa el correo utilizado en tu compra.</p>
+
+    // PEDIDO APROBADO → VENTANA PARA CORREO
+
+    const emailModal = mostrarVentana(
+      "Pedido aprobado",
+      `
+        <div style="font-size:45px;">🟢</div>
+
+        <p>
+          Tu pedido está aprobado.
+        </p>
+
+        <p>
+          Ingresa el correo utilizado durante tu compra.
+        </p>
 
         <input
           type="email"
-          id="access-email"
+          id="popup-access-email"
           placeholder="Tu correo electrónico"
-          style="width:100%;margin-bottom:10px;"
+          style="
+            width:100%;
+            box-sizing:border-box;
+            margin:10px 0;
+          "
         >
 
         <button
-          class="btn primary"
-          id="verify-purchase"
           type="button"
+          id="popup-verify"
+          class="btn primary"
         >
           Verificar mi compra
         </button>
 
-        <div id="access-result"></div>
-      </div>
-    `;
+        <div
+          id="popup-access-result"
+          style="margin-top:12px;"
+        ></div>
+      `
+    );
 
-    const verifyPurchase =
-      document.querySelector("#verify-purchase");
 
-    verifyPurchase.onclick = async () => {
-      const email =
-        document.querySelector("#access-email").value.trim();
+    const verifyButton =
+      emailModal.querySelector("#popup-verify");
 
-      const accessResult =
-        document.querySelector("#access-result");
+    const emailInput =
+      emailModal.querySelector("#popup-access-email");
+
+    const accessResult =
+      emailModal.querySelector("#popup-access-result");
+
+
+    verifyButton.onclick = async () => {
+
+      const email = emailInput.value.trim();
 
       if (!email) {
         accessResult.textContent =
@@ -134,9 +235,13 @@ consultOrder.onclick = async () => {
         return;
       }
 
-      accessResult.textContent = "Verificando...";
+      verifyButton.disabled = true;
+      verifyButton.textContent = "Verificando...";
+      accessResult.textContent = "";
+
 
       try {
+
         const accessResponse = await fetch(
           "/api/order-access",
           {
@@ -151,42 +256,101 @@ consultOrder.onclick = async () => {
           }
         );
 
+
         const accessData =
           await accessResponse.json();
 
+
         if (!accessData.ok) {
+
+          verifyButton.disabled = false;
+          verifyButton.textContent = "Verificar mi compra";
+
           accessResult.textContent =
             accessData.message ||
             "No se pudo verificar la compra.";
+
           return;
         }
 
-        accessResult.innerHTML = `
-          <div style="margin-top:15px;">
-            🟢 <strong>Compra verificada.</strong>
+
+        // CERRAMOS VENTANA DEL CORREO
+
+        emailModal.remove();
+
+
+        // MOSTRAMOS VENTANA FINAL
+
+        const deliveryModal = mostrarVentana(
+          "¡Compra verificada!",
+          `
+            <div style="font-size:45px;">🟢</div>
 
             <p>
-              Licencia:
-              <strong>${accessData.licenseCode}</strong>
+              Tu Calendario Ruster está listo.
             </p>
 
+            <div style="
+              margin:20px 0;
+              padding:18px;
+              border-radius:12px;
+              background:#f4f4f8;
+            ">
+
+              <small>LICENCIA</small>
+
+              <div
+                id="popup-license"
+                style="
+                  margin-top:8px;
+                  font-size:20px;
+                  font-weight:700;
+                  word-break:break-all;
+                "
+              ></div>
+
+            </div>
+
             <a
+              id="popup-download"
               class="btn primary"
-              href="${accessData.downloadUrl}"
+              target="_blank"
+              rel="noopener"
             >
               Descargar Calendario Ruster
             </a>
-          </div>
-        `;
+
+            <p style="font-size:13px;margin-top:15px;">
+              El enlace de descarga es válido por 48 horas.
+            </p>
+          `
+        );
+
+
+        deliveryModal.querySelector("#popup-license").textContent =
+          accessData.licenseCode;
+
+        deliveryModal.querySelector("#popup-download").href =
+          accessData.downloadUrl;
+
 
       } catch (error) {
+
+        verifyButton.disabled = false;
+        verifyButton.textContent = "Verificar mi compra";
+
         accessResult.textContent =
           "No se pudo verificar la compra.";
       }
     };
 
   } catch (error) {
-    orderResult.textContent =
-      "No se pudo consultar el pedido.";
+
+    mostrarVentana(
+      "Error",
+      `
+        <p>No se pudo consultar el pedido.</p>
+      `
+    );
   }
 };
