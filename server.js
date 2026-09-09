@@ -266,6 +266,58 @@ app.get("/api/order-status/:id", async (req, res) => {
   }
 });
 
+// Consultar estado del pedido
+app.get("/api/order-status/:id", async (req, res) => {
+  const orderId = String(req.params.id || "").trim();
+
+  if (!orderId) {
+    return res.status(400).json({
+      ok: false,
+      message: "Ingresa un número de pedido."
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `
+      SELECT
+        id,
+        status,
+        created_at AS "createdAt"
+      FROM orders
+      WHERE id = $1
+      `,
+      [orderId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        ok: false,
+        message: "No encontramos ese número de pedido."
+      });
+    }
+
+    const order = result.rows[0];
+
+    res.json({
+      ok: true,
+      order: {
+        id: order.id,
+        status: order.status,
+        createdAt: order.createdAt
+      }
+    });
+
+  } catch (error) {
+    console.error("Error consultando pedido:", error);
+
+    res.status(500).json({
+      ok: false,
+      message: "No se pudo consultar el pedido."
+    });
+  }
+});
+
 // API del panel de administración
 app.get("/api/admin/orders", async (req, res) => {
   const token = req.query.token;
