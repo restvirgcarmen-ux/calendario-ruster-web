@@ -407,15 +407,16 @@ app.get("/download", async (req, res) => {
 
   try {
     const result = await pool.query(
-      `
-      SELECT id
-      FROM orders
-      WHERE download_token = $1
-        AND status = 'aprobado'
-      LIMIT 1
-      `,
-      [token]
-    );
+  `
+  SELECT id
+  FROM orders
+  WHERE download_token = $1
+    AND status = 'aprobado'
+    AND download_expires_at > NOW()
+  LIMIT 1
+  `,
+  [token]
+);
 
     if (result.rowCount === 0) {
       return res.status(403).send("Enlace de descarga inválido o expirado.");
