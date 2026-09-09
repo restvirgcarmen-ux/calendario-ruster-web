@@ -211,49 +211,100 @@
 
   function mostrarPedidos(orders) {
 
-    ordersContainer.innerHTML = "";
+  ordersContainer.innerHTML = "";
 
-    if (!orders || orders.length === 0) {
-      message.textContent = "No hay solicitudes pendientes.";
-      return;
-    }
-
-    message.textContent =
-      "Solicitudes pendientes: " + orders.length;
-
-    orders.forEach(order => {
-
-      const card = document.createElement("div");
-
-      card.className = "order-card";
-
-      card.innerHTML = `
-        <h2>🟡 Solicitud pendiente</h2>
-
-        <div class="data">
-          <div><strong>Cliente:</strong> ${escapeHtml(order.name)}</div>
-          <div><strong>Correo:</strong> ${escapeHtml(order.email)}</div>
-          <div><strong>Pedido:</strong> ${escapeHtml(order.id)}</div>
-          <div><strong>Producto:</strong> ${escapeHtml(order.product)}</div>
-          <div><strong>Método:</strong> ${escapeHtml(order.paymentMethod)}</div>
-          <div><strong>Monto:</strong> S/ ${escapeHtml(order.price)}</div>
-          <div><strong>Estado:</strong> ${escapeHtml(order.status)}</div>
-        </div>
-
-        <div class="actions">
-          <button class="approve" disabled>
-            ✅ APROBAR DESCARGA
-          </button>
-
-          <button class="reject" disabled>
-            ❌ RECHAZAR
-          </button>
-        </div>
-      `;
-
-      ordersContainer.appendChild(card);
-    });
+  if (!orders || orders.length === 0) {
+    message.textContent = "No hay solicitudes pendientes.";
+    return;
   }
+
+  message.textContent =
+    "Solicitudes pendientes: " + orders.length;
+
+  orders.forEach(order => {
+
+    const card = document.createElement("div");
+
+    card.className = "order-card";
+
+    card.innerHTML = `
+      <h2>🟡 Solicitud pendiente</h2>
+
+      <div class="data">
+        <div><strong>Cliente:</strong> ${escapeHtml(order.name)}</div>
+        <div><strong>Correo:</strong> ${escapeHtml(order.email)}</div>
+        <div><strong>Pedido:</strong> ${escapeHtml(order.id)}</div>
+        <div><strong>Producto:</strong> ${escapeHtml(order.product)}</div>
+        <div><strong>Método:</strong> ${escapeHtml(order.paymentMethod)}</div>
+        <div><strong>Monto:</strong> S/ ${escapeHtml(order.price)}</div>
+        <div><strong>Estado:</strong> ${escapeHtml(order.status)}</div>
+      </div>
+
+      <div class="actions">
+        <button class="approve">
+          ✅ APROBAR DESCARGA
+        </button>
+
+        <button class="reject" disabled>
+          ❌ RECHAZAR
+        </button>
+      </div>
+    `;
+
+    const approveButton = card.querySelector(".approve");
+
+    approveButton.onclick = async () => {
+
+      const confirmar = confirm(
+        "¿Confirmas que deseas aprobar este pedido?"
+      );
+
+      if (!confirmar) {
+        return;
+      }
+
+      approveButton.disabled = true;
+      approveButton.textContent = "Procesando...";
+
+      try {
+
+        const response = await fetch(
+          "/api/admin/orders/" +
+          encodeURIComponent(order.id) +
+          "/approve?token=" +
+          encodeURIComponent(adminToken),
+          {
+            method: "POST"
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.ok) {
+          alert(data.message || "No se pudo aprobar el pedido.");
+
+          approveButton.disabled = false;
+          approveButton.textContent = "✅ APROBAR DESCARGA";
+
+          return;
+        }
+
+        alert("Pedido aprobado correctamente.");
+
+        cargarPedidos();
+
+      } catch (error) {
+
+        alert("No se pudo conectar con el servidor.");
+
+        approveButton.disabled = false;
+        approveButton.textContent = "✅ APROBAR DESCARGA";
+      }
+    };
+
+    ordersContainer.appendChild(card);
+  });
+}
 
   function escapeHtml(value) {
     return String(value ?? "")
