@@ -337,6 +337,7 @@ app.post("/api/admin/orders/:id/approve", async (req, res) => {
         status = 'aprobado',
         license_code = $1,
         download_token = $2
+        download_expires_at = NOW() + INTERVAL '48 hours'
       WHERE id = $3
         AND status = 'pendiente_pago'
       RETURNING
@@ -350,6 +351,7 @@ app.post("/api/admin/orders/:id/approve", async (req, res) => {
         status,
         license_code AS "licenseCode",
         download_token AS "downloadToken",
+        download_expires_at AS "downloadExpiresAt",
         created_at AS "createdAt"
       `,
       [licenseCode, downloadToken, orderId]
