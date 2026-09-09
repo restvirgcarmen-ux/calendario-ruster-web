@@ -414,7 +414,9 @@ app.get("/download", async (req, res) => {
       return res.status(403).send("Enlace de descarga inválido o expirado.");
     }
 
-    res.redirect(APK_URL);
+    res.sendFile(
+  path.join(__dirname, "downloads", "calendario-ruster.apk")
+);
 
   } catch (error) {
     console.error("Error verificando descarga:", error);
