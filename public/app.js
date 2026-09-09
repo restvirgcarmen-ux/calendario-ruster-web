@@ -88,13 +88,102 @@ consultOrder.onclick = async () => {
       return;
     }
 
-    if (j.order.status === "aprobado") {
-      orderResult.textContent =
-        "🟢 Pedido aprobado. Tu compra está lista.";
-    } else {
+    if (j.order.status !== "aprobado") {
       orderResult.textContent =
         "🟡 Pedido pendiente de pago.";
+      return;
     }
+
+    orderResult.innerHTML = `
+      <div style="margin-top:15px;">
+        🟢 <strong>Pedido aprobado.</strong>
+        <p>Ingresa el correo utilizado en tu compra.</p>
+
+        <input
+          type="email"
+          id="access-email"
+          placeholder="Tu correo electrónico"
+          style="width:100%;margin-bottom:10px;"
+        >
+
+        <button
+          class="btn primary"
+          id="verify-purchase"
+          type="button"
+        >
+          Verificar mi compra
+        </button>
+
+        <div id="access-result"></div>
+      </div>
+    `;
+
+    const verifyPurchase =
+      document.querySelector("#verify-purchase");
+
+    verifyPurchase.onclick = async () => {
+      const email =
+        document.querySelector("#access-email").value.trim();
+
+      const accessResult =
+        document.querySelector("#access-result");
+
+      if (!email) {
+        accessResult.textContent =
+          "Ingresa el correo utilizado en la compra.";
+        return;
+      }
+
+      accessResult.textContent = "Verificando...";
+
+      try {
+        const accessResponse = await fetch(
+          "/api/order-access",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              orderId,
+              email
+            })
+          }
+        );
+
+        const accessData =
+          await accessResponse.json();
+
+        if (!accessData.ok) {
+          accessResult.textContent =
+            accessData.message ||
+            "No se pudo verificar la compra.";
+          return;
+        }
+
+        accessResult.innerHTML = `
+          <div style="margin-top:15px;">
+            🟢 <strong>Compra verificada.</strong>
+
+            <p>
+              Licencia:
+              <strong>${accessData.licenseCode}</strong>
+            </p>
+
+            <a
+              class="btn primary"
+              href="${accessData.downloadUrl}"
+            >
+              Descargar Calendario Ruster
+            </a>
+          </div>
+        `;
+
+      } catch (error) {
+        accessResult.textContent =
+          "No se pudo verificar la compra.";
+      }
+    };
 
   } catch (error) {
     orderResult.textContent =
