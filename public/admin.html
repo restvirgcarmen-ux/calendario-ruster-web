@@ -138,6 +138,34 @@
     .hidden {
       display: none;
     }
+
+    .actions button {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      min-width: 190px !important;
+      min-height: 55px !important;
+      padding: 14px 22px !important;
+      border: none !important;
+      border-radius: 12px !important;
+      font-family: Arial, sans-serif !important;
+      font-size: 18px !important;
+      font-weight: bold !important;
+      line-height: 1.2 !important;
+      text-indent: 0 !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+
+    .actions .approve {
+      background: #16a34a !important;
+      color: #ffffff !important;
+    }
+
+    .actions .reject {
+      background: #dc2626 !important;
+      color: #ffffff !important;
+    }
   </style>
 </head>
 
@@ -258,11 +286,11 @@
         </div>
 
         <div class="actions">
-          <button class="approve"
+          <button class="approve">
             ✅ APROBAR DESCARGA
           </button>
 
-          <button class="reject"
+          <button class="reject">
             ❌ RECHAZAR
           </button>
         </div>
