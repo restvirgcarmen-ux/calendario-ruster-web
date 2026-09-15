@@ -111,22 +111,6 @@
       color: white;
     }
 
-    .actions button {
-  min-width: 190px;
-  min-height: 55px;
-  padding: 14px 22px;
-  border: none;
-  border-radius: 12px;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.actions button:disabled {
-  opacity: 1;
-  cursor: pointer;
-}
-
     .message {
       padding: 15px;
       background: white;
@@ -139,33 +123,23 @@
       display: none;
     }
 
-    .actions button {
-      display: inline-flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      min-width: 190px !important;
-      min-height: 55px !important;
-      padding: 14px 22px !important;
-      border: none !important;
-      border-radius: 12px !important;
-      font-family: Arial, sans-serif !important;
-      font-size: 18px !important;
-      font-weight: bold !important;
-      line-height: 1.2 !important;
-      text-indent: 0 !important;
-      visibility: visible !important;
-      opacity: 1 !important;
-    }
+    @media (max-width: 600px) {
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    width: 100%;
+  }
 
-    .actions .approve {
-      background: #16a34a !important;
-      color: #ffffff !important;
-    }
-
-    .actions .reject {
-      background: #dc2626 !important;
-      color: #ffffff !important;
-    }
+  .actions button {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0 !important;
+    box-sizing: border-box;
+    font-size: 16px !important;
+    padding: 14px 10px !important;
+  }
+}
   </style>
 </head>
 
@@ -286,49 +260,17 @@
         </div>
 
         <div class="actions">
-          <button class="approve" data-order-id="${escapeHtml(order.id)}">
+          <button class="approve"
             ✅ APROBAR DESCARGA
           </button>
 
-          <button class="reject" data-order-id="${escapeHtml(order.id)}">
+          <button class="reject"
             ❌ RECHAZAR
           </button>
         </div>
       `;
 
       ordersContainer.appendChild(card);
-      const approveButton = card.querySelector(".approve");
-
-approveButton.addEventListener("click", async () => {
-  approveButton.disabled = true;
-  approveButton.textContent = "APROBANDO...";
-
-  try {
-    const response = await fetch(
-      `/api/admin/orders/${encodeURIComponent(order.id)}/approve?token=${encodeURIComponent(adminToken)}`,
-      {
-        method: "POST"
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok || !data.ok) {
-      alert(data.message || "No se pudo aprobar el pedido.");
-      approveButton.disabled = false;
-      approveButton.textContent = "✅ APROBAR DESCARGA";
-      return;
-    }
-
-    alert("Pedido aprobado correctamente.");
-    cargarPedidos();
-
-  } catch (error) {
-    alert("Error de conexión con el servidor.");
-    approveButton.disabled = false;
-    approveButton.textContent = "✅ APROBAR DESCARGA";
-  }
-});
     });
   }
 
