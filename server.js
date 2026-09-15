@@ -501,6 +501,54 @@ app.get("/api/admin/orders/:id", async (req, res) => {
   }
 });
 
+// Rechazar pedido
+app.post("/api/admin/orders/:id/reject", async (req, res) => {
+  const token = req.query.token;
+
+  if (!ADMIN_TOKEN || token !== ADMIN_TOKEN) {
+    return res.status(401).json({
+      ok: false,
+      message: "No autorizado."
+    });
+  }
+
+  const orderId = req.params.id;
+
+  try {
+    const result = await pool.query(
+      `
+      UPDATE orders
+      SET status = 'rechazado'
+      WHERE id = $1
+        AND status = 'pendiente_pago'
+      RETURNING id, status
+      `,
+      [orderId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        ok: false,
+        message: "Pedido no encontrado o ya fue procesado."
+      });
+    }
+
+    res.json({
+      ok: true,
+      message: "Pedido rechazado correctamente.",
+      order: result.rows[0]
+    });
+
+  } catch (error) {
+    console.error("Error rechazando pedido:", error);
+
+    res.status(500).json({
+      ok: false,
+      message: "No se pudo rechazar el pedido."
+    });
+  }
+});
+
 // Aprobar pedido y generar licencia
 app.post("/api/admin/orders/:id/approve", async (req, res) => {
   const token = req.query.token;
