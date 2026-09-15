@@ -251,10 +251,8 @@
             ❌ RECHAZAR
           </button>
         </div>
-      `;
-      
-    });
-  }
+      `;   
+    }
    
   ordersContainer.appendChild(card);
 
@@ -293,7 +291,7 @@
 
    const rejectButton = card.querySelector(".reject");
 
-rejectButton.addEventListener("click", async () => {
+  rejectButton.addEventListener("click", async () => {
   rejectButton.disabled = true;
   rejectButton.textContent = "RECHAZANDO...";
 
