@@ -313,7 +313,7 @@ consultOrder.onclick = async () => {
 
             <a
               id="popup-download"
-              class="btn primary"
+              class="btn primary download-btn"
               target="_blank"
               rel="noopener"
             >
