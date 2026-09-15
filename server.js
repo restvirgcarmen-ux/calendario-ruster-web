@@ -596,20 +596,24 @@ app.post("/api/admin/orders/:id/approve", async (req, res) => {
       }
     );
 
-    const licenseData = await licenseResponse.json();
+    const licenseText = await licenseResponse.text();
 
-    if (
-      !licenseResponse.ok ||
-      !licenseData.ok ||
-      !licenseData.licenses ||
-      !licenseData.licenses.length
-    ) {
-      console.error("Error generando licencia:", licenseData);
+      console.log("Respuesta del servidor de licencias:", {
+       status: licenseResponse.status,
+       contentType: licenseResponse.headers.get("content-type"),
+       body: licenseText.slice(0, 500)
+    });
 
-      return res.status(500).json({
-        ok: false,
-        message: "No se pudo generar la licencia."
-      });
+      let licenseData;
+
+    try {
+      licenseData = JSON.parse(licenseText);
+    } catch (error) {
+      console.error("El servidor de licencias no devolvió JSON válido.");
+      return res.status(502).json({
+      ok: false,
+      message: "El servidor de licencias devolvió una respuesta inválida."
+    });
     }
 
     const licenseCode = licenseData.licenses[0].code;
