@@ -259,19 +259,19 @@
 
   const approveButton = card.querySelector(".approve");
 
-approveButton.addEventListener("click", async () => {
+  approveButton.addEventListener("click", async () => {
   approveButton.disabled = true;
   approveButton.textContent = "APROBANDO...";
 
   try {
-    const response = await fetch(
+  const response = await fetch(
       `/api/admin/orders/${encodeURIComponent(order.id)}/approve?token=${encodeURIComponent(adminToken)}`,
       {
         method: "POST"
       }
     );
 
-    const data = await response.json();
+  const data = await response.json();
 
     if (!response.ok || !data.ok) {
       alert(data.message || "No se pudo aprobar el pedido.");
