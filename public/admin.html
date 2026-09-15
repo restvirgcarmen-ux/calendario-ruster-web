@@ -304,26 +304,26 @@
 
     const data = await response.json();
 
-    if (!response.ok || !data.ok) {
-      alert(data.message || "No se pudo rechazar el pedido.");
-      rejectButton.disabled = false;
-      rejectButton.textContent = "❌ RECHAZAR";
-      return;
-    }
+      if (!response.ok || !data.ok) {
+        alert(data.message || "No se pudo rechazar el pedido.");
+        rejectButton.disabled = false;
+        rejectButton.textContent = "❌ RECHAZAR";
+        return;
+      }
 
-    alert("Pedido rechazado correctamente.");
-    cargarPedidos();
+       alert("Pedido rechazado correctamente.");
+       cargarPedidos();
 
-  } catch (error) {
-    alert("Error de conexión con el servidor.");
-    rejectButton.disabled = false;
-    rejectButton.textContent = "❌ RECHAZAR";
+      } catch (error) {
+        alert("Error de conexión con el servidor.");
+        rejectButton.disabled = false;
+        rejectButton.textContent = "❌ RECHAZAR";
+      }
+    });
+  });
+
   }
 
-  });
-
-  });
-}
   function escapeHtml(value) {
     return String(value ?? "")
       .replace(/&/g, "&amp;")
