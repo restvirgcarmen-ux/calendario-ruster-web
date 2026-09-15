@@ -303,7 +303,7 @@ consultOrder.onclick = async () => {
                 id="popup-license"
                 style="
                   margin-top:8px;
-                  font-size:20px;
+                  font-size:14px;
                   font-weight:700;
                   word-break:break-all;
                 "
