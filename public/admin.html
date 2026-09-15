@@ -243,7 +243,7 @@
         </div>
 
         <div class="actions">
-          <button class="approve" data-order-id="${escapeHtml(order.id)}">
+          <button class="approve">
             ✅ APROBAR DESCARGA
           </button>
 
@@ -252,10 +252,11 @@
           </button>
         </div>
       `;
-
-      ordersContainer.appendChild(card);
+      
     });
   }
+   
+  ordersContainer.appendChild(card);
 
   const approveButton = card.querySelector(".approve");
 
@@ -287,6 +288,39 @@
     alert("Error de conexión con el servidor.");
     approveButton.disabled = false;
     approveButton.textContent = "✅ APROBAR DESCARGA";
+  }
+});
+
+   const rejectButton = card.querySelector(".reject");
+
+rejectButton.addEventListener("click", async () => {
+  rejectButton.disabled = true;
+  rejectButton.textContent = "RECHAZANDO...";
+
+  try {
+    const response = await fetch(
+      `/api/admin/orders/${encodeURIComponent(order.id)}/reject?token=${encodeURIComponent(adminToken)}`,
+      {
+        method: "POST"
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.ok) {
+      alert(data.message || "No se pudo rechazar el pedido.");
+      rejectButton.disabled = false;
+      rejectButton.textContent = "❌ RECHAZAR";
+      return;
+    }
+
+    alert("Pedido rechazado correctamente.");
+    cargarPedidos();
+
+  } catch (error) {
+    alert("Error de conexión con el servidor.");
+    rejectButton.disabled = false;
+    rejectButton.textContent = "❌ RECHAZAR";
   }
 });
 
