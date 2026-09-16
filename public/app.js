@@ -354,3 +354,12 @@ consultOrder.onclick = async () => {
     );
   }
 };
+
+const menuButton = document.querySelector(".menu");
+const nav = document.querySelector("header nav");
+
+if (menuButton && nav) {
+  menuButton.addEventListener("click", () => {
+    nav.classList.toggle("nav-open");
+  });
+}
