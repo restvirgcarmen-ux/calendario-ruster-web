@@ -389,3 +389,19 @@ body:has(.modal.open) {
     box-sizing: border-box;
   }
 }
+
+ @media (max-width: 900px) {
+  header nav.nav-open {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 76px;
+    left: 0;
+    right: 0;
+    padding: 22px;
+    gap: 18px;
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+    z-index: 10;
+  }
+}
