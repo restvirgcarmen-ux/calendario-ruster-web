@@ -8,6 +8,137 @@
     <title>Calendario Ruster | Android</title>
     <link rel="stylesheet" href="/styles.css">
   </head><body>
+<style>
+  /* Contenedor principal de la aplicación */
+  .calendar-container {
+    font-family: 'Arial', sans-serif;
+    max-width: 450px;
+    margin: 20px auto;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+  /* Caja de Actividades Superior */
+  .activity-box {
+    border: 3px solid #b0b0b0;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 25px;
+    min-height: 110px;
+    position: relative;
+  }
+  .activity-box h2 {
+    margin: 0 0 10px 0;
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #000;
+  }
+  .btn-ok {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .activity-box p {
+    margin: 0;
+    font-size: 1.4rem;
+    color: #333;
+  }
+
+  /* Navegación del Mes */
+  .month-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 0 10px;
+  }
+  .month-navigation h1 {
+    color: #0b1a7d;
+    font-size: 2.2rem;
+    font-weight: 900;
+    margin: 0;
+    letter-spacing: 1px;
+  }
+  .month-navigation .arrow {
+    color: #0b1a7d;
+    font-size: 2.2rem;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  /* Contenedor del Calendario (Borde general azul) */
+  .calendar-grid {
+    border: 4px solid #0b1a7d;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 25px;
+  }
+
+  /* Fila de días L M M J V S D */
+  .weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background-color: #0b1a7d;
+    text-align: center;
+    padding: 12px 0;
+  }
+  .weekdays div {
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+
+  /* Rejilla de los números */
+  .days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background-color: #b0b0b0; /* Color de las líneas divisorias */
+    gap: 2px; /* Espacio que simula la cuadrícula */
+  }
+
+  /* Celdas individuales de los días y vacías */
+  .day, .empty {
+    background-color: white;
+    text-align: center;
+    padding: 18px 0;
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #111;
+  }
+
+  /* Clases de colores de fondo de la imagen 3 */
+  .style-green { background-color: #caeec2; }
+  .style-pink { background-color: #f7b6d1; }
+  .style-yellow { background-color: #fff9a6; }
+
+  /* Cambiar color de números a rojo (como los domingos) */
+  .text-red { color: #d32f2f; }
+
+  /* Botón inferior EDITAR */
+  .btn-edit {
+    display: block;
+    width: 100%;
+    background-color: black;
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+    border: none;
+    border-radius: 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+  }
+</style>
     
 <header>
   <a class="brand" href="#inicio"><b>R</b> Calendario <strong>Ruster</strong></a>
