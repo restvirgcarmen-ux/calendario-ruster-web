@@ -37,26 +37,49 @@ goConsult.onclick=()=>{
   modal.classList.remove("open");
 };
 
-const btnPlin=document.querySelector("#btn-plin");
-const paymentPopup=document.querySelector("#payment-popup");
-const paymentPopupClose=document.querySelector("#payment-popup-close");
-const paymentDone=document.querySelector("#payment-done");
 
-btnPlin.onclick=()=>{
+const btnPlin = document.querySelector("#btn-plin");
+const btnYape = document.querySelector("#btn-yape");
+const paymentPopup = document.querySelector("#payment-popup");
+const paymentPopupClose = document.querySelector("#payment-popup-close");
+const paymentDone = document.querySelector("#payment-done");
+const paymentQr = document.querySelector("#payment-qr");
+const paymentTitle = document.querySelector("#payment-popup-title");
+const paymentMethod = document.querySelector("#payment-method");
+const paymentNumber = document.querySelector(".payment-number");
+
+function abrirPago(metodo) {
+  const esYape = metodo === "yape";
+
+  paymentMethod.value = metodo;
+  paymentTitle.textContent = esYape ? "Pago con Yape" : "Pago con Plin";
+  paymentQr.src = esYape ? "/qr-yape.jpeg" : "/qr-plin.jpeg";
+  paymentQr.alt = esYape ? "QR de Yape" : "QR de Plin";
+
+  paymentNumber.innerHTML = esYape
+    ? 'Número Yape: <strong>947148912</strong>'
+    : 'Número Plin: <strong>947148912</strong>';
+
+  btnPlin.classList.toggle("active", !esYape);
+  btnYape.classList.toggle("active", esYape);
+
   paymentPopup.classList.add("open");
-};
+}
 
-paymentPopupClose.onclick=()=>{
+btnPlin.onclick = () => abrirPago("plin");
+btnYape.onclick = () => abrirPago("yape");
+
+paymentPopupClose.onclick = () => {
   paymentPopup.classList.remove("open");
 };
 
-paymentDone.onclick=()=>{
+paymentDone.onclick = () => {
   paymentPopup.classList.remove("open");
   form.requestSubmit();
 };
 
-paymentPopup.onclick=e=>{
-  if(e.target===paymentPopup){
+paymentPopup.onclick = (e) => {
+  if (e.target === paymentPopup) {
     paymentPopup.classList.remove("open");
   }
 };
