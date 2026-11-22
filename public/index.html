@@ -202,6 +202,51 @@
     font-weight: bold;
     cursor: pointer;
   }
+  
+/* VIDEO EXPLICATIVO CALENDARIO RUSTER */
+.video-explicativo {
+  padding: 70px 20px;
+  text-align: center;
+  background: #f5f7fb;
+}
+
+.video-info {
+  max-width: 600px;
+  margin: 0 auto 30px;
+}
+
+.video-info h2 {
+  font-size: 2.2rem;
+  margin: 15px 0;
+}
+
+.video-info h2 em {
+  color: #315eea;
+}
+
+.video-info p {
+  color: #666;
+  line-height: 1.7;
+}
+
+.video-container {
+  width: 100%;
+  max-width: 360px;
+  margin: auto;
+  overflow: hidden;
+  border-radius: 22px;
+  background: #000;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.18);
+}
+
+.video-container video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 9 / 16;
+  object-fit: contain;
+}
+
 </style>
 
 <!-- Estructura HTML del Celular en 3D -->
@@ -290,7 +335,27 @@
   </div>
 </div>
 </section>
-  
+
+<section class="video-explicativo" id="video-ruster">
+  <div class="video-info">
+    <label>🎥 CONOCE CALENDARIO RUSTER</label>
+    <h2>Así funciona.<br><em>Así de sencillo.</em></h2>
+    <p>Mira este video y descubre cómo organizar tus fechas y actividades con Calendario Ruster.</p>
+  </div>
+
+  <div class="video-container">
+    <video
+      controls
+      playsinline
+      preload="metadata"
+      poster=""
+    >
+      <source src="/videos/calendario-ruster.mp4" type="video/mp4">
+      Tu navegador no puede reproducir este video.
+    </video>
+  </div>
+</section>
+ 
 <section class="strip">
   <div>
     <b>1 dispositivo</b>
